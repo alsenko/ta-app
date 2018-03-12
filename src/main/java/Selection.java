@@ -175,8 +175,8 @@ public class Selection
 			classList.clear();
 			taList = ExcelReader.createTAList(taListFile);
 			classList = ExcelReader.createClassList(classListFile); 
-			HashMap<Integer,HashMap<Integer,ArrayList<TA>>> testMap = TestMain.createMap(taList);
-			schedule = TestMain.createSchedule(testMap,classList);
+			HashMap<Integer,HashMap<Integer,ArrayList<TA>>> testMap = ScheduleMaker.createMap(taList);
+			schedule = ScheduleMaker.createSchedule(testMap,classList);
 			//show button to save
 			actionStatus3.setText("Success");
 		}

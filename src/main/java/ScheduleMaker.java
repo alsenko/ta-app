@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestMain {
+public class ScheduleMaker {
 	 public static void printCurrentList(ArrayList<Class> schedule) {
 		 for (Class x : schedule){
 				System.out.println(x.toString());
