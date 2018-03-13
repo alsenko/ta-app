@@ -56,17 +56,17 @@ public class ExcelReader {
 	             }
 	             while (taInfo.size() != 18)
 	            	 taInfo.add("");
-	             protoTA.lastName = taInfo.get(0);
-	             protoTA.firstName = taInfo.get(1);
-	             protoTA.taType = taInfo.get(2);
-	             protoTA.monday = taInfo.get(4);
-	             protoTA.tuesday = taInfo.get(5);
-	             protoTA.wednesday = taInfo.get(6);
-	             protoTA.thursday = taInfo.get(7);
-	             protoTA.friday = taInfo.get(8);
-	             protoTA.pref1 = taInfo.get(15);
-	             protoTA.pref2 = taInfo.get(16);
-	             protoTA.pref3 = taInfo.get(17);
+	             protoTA.setLastName(taInfo.get(0));
+	             protoTA.setFirstName(taInfo.get(1));
+	             protoTA.setTaType(taInfo.get(2));
+	             protoTA.setMonday(taInfo.get(4));
+	             protoTA.setTuesday(taInfo.get(5));
+	             protoTA.setWednesday(taInfo.get(6));
+	             protoTA.setThursday(taInfo.get(7));
+	             protoTA.setFriday(taInfo.get(8));
+	             protoTA.setPref1(taInfo.get(15));
+	             protoTA.setPref2(taInfo.get(16));
+	             protoTA.setPref3(taInfo.get(17));
 	             taInfo.clear();
 	             TA newTA = createTA(protoTA);
 	             taList.add(newTA);
@@ -84,8 +84,8 @@ public class ExcelReader {
 }
 
  
- static ArrayList<Class> createClassList(String filename) {
-	 ArrayList<Class> classList = new ArrayList<Class>();
+ static ArrayList<Course> createClassList(String filename) {
+	 ArrayList<Course> classList = new ArrayList<Course>();
 	 try{
 	 String excelFilePath = filename;   
 	   FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
@@ -111,50 +111,50 @@ public class ExcelReader {
 	                 			   break;	                             
 	                 }
 	             }
-	             newSection.section = sectionInfo.get(1);
-	             newSection.course = sectionInfo.get(0);
-	             newSection.room = sectionInfo.get(5);
+	             newSection.setSection(sectionInfo.get(1));
+	             newSection.setCourse(sectionInfo.get(0));
+	             newSection.setRoom(sectionInfo.get(5));
 	             
 	             switch (sectionInfo.get(2)){
 	             
-	             case "M" : newSection.day = 1;
+	             case "M" : newSection.setDay(1);
 	             			break;            	 
-	             case "Tu" : newSection.day = 2;
+	             case "Tu" : newSection.setDay(2);
 	             			break;	            	 
-	             case "W" : newSection.day = 3;
+	             case "W" : newSection.setDay(3);
 	             			break;	             
-	             case "Th" :newSection.day = 4;
+	             case "Th" :newSection.setDay(4);
 	             			break;
-	             case "F" : newSection.day = 5;
+	             case "F" : newSection.setDay(5);
       						break;	             
 	             }
 	             
 	             switch (sectionInfo.get(3).charAt(0)){
 	             
-	             case '9' : newSection.block = 1;
+	             case '9' : newSection.setBlock(1);
 	             			break;            	 
-	             case '1' : newSection.block = 2;
+	             case '1' : newSection.setBlock(2);
 	             			break;	            	 
-	             case '3' : newSection.block = 3;
+	             case '3' : newSection.setBlock(3);
 	             			break;	             
-	             case '6' :newSection.block = 4;
+	             case '6' :newSection.setBlock(4);
 	             			break;
-	             case '7' :newSection.block = 4;
+	             case '7' :newSection.setBlock(4);
       						break;	             			
          
 	             }
 	             boolean classFound = false;
-	             for (Class course : classList){
-	            	 if (course.className.equals(newSection.course)){
-	            		 course.sections.add(newSection);
+	             for (Course course : classList){
+	            	 if (course.getClassName().equals(newSection.getCourse())){
+	            		 course.getSections().add(newSection);
 	            		 classFound = true;
 	            		 break;
 	            	 }
 	             }
 	             if (!classFound){
-	            	 Class course = new Class();
-	            	 course.className = newSection.course;
-	            	 course.sections.add(newSection);
+	            	 Course course = new Course();
+	            	 course.setClassName(newSection.getCourse());
+	            	 course.getSections().add(newSection);
 	            	 classList.add(course);
 	             }
 	             sectionInfo.clear();
@@ -175,39 +175,39 @@ public class ExcelReader {
  
 private static TA createTA(ProtoTA protoTA) {
 	 TA newTA = new TA();
-	 newTA.firstName = protoTA.firstName;
-	 	 newTA.lastName = protoTA.lastName;
+	 newTA.setFirstName(protoTA.getFirstName());
+	 	 newTA.setLastName(protoTA.getLastName());
 	 
-	 if (protoTA.pref1.equals("") || protoTA.pref1.equals("None"))
-		 newTA.pref1 = "none";
+	 if (protoTA.getPref1().equals("") || protoTA.getPref1().equals("None"))
+		 newTA.setPref1("none");
 	 else
-		 newTA.pref1 = protoTA.pref1.substring(0, 7);
+		 newTA.setPref1(protoTA.getPref1().substring(0, 7));
 	 
 	 
-	 if (protoTA.pref2.equals("")|| protoTA.pref2.equals("None"))
-		 newTA.pref2 = "none";	 
+	 if (protoTA.getPref2().equals("")|| protoTA.getPref2().equals("None"))
+		 newTA.setPref2("none");	 
 	 else
-		 newTA.pref2 = protoTA.pref2.substring(0, 7);
+		 newTA.setPref2(protoTA.getPref2().substring(0, 7));
 	 
-	 if (protoTA.pref3.equals("")|| protoTA.pref3.equals("None"))
-		 newTA.pref3 = "none";	 
+	 if (protoTA.getPref3().equals("")|| protoTA.getPref3().equals("None"))
+		 newTA.setPref3("none");	 
 	 else
-		 newTA.pref3 = protoTA.pref3.substring(0, 7);
+		 newTA.setPref3(protoTA.getPref3().substring(0, 7));
 	 
-	 if (protoTA.taType.equals("Full TA")){
-		 newTA.status = 2;
-		 newTA.fullTA = true;
+	 if (protoTA.getTaType().equals("Full TA")){
+		 newTA.setStatus(2);
+		 newTA.setFullTA(true);
 	 }
 	 else {
-		 newTA.status = 1;
-		 newTA.fullTA = false;
+		 newTA.setStatus(1);
+		 newTA.setFullTA(false);
 	 }
 	 
-	 newTA.monday = createDay(protoTA.monday);
-	 newTA.tuesday = createDay(protoTA.tuesday);
-	 newTA.wednesday = createDay(protoTA.wednesday);
-	 newTA.thursday = createDay(protoTA.thursday);
-	 newTA.friday = createDay(protoTA.friday);
+	 newTA.setMonday(createDay(protoTA.getMonday()));
+	 newTA.setTuesday(createDay(protoTA.getTuesday()));
+	 newTA.setWednesday(createDay(protoTA.getWednesday()));
+	 newTA.setThursday(createDay(protoTA.getThursday()));
+	 newTA.setFriday(createDay(protoTA.getFriday()));
  
 	 return newTA;
 }
@@ -215,10 +215,10 @@ private static TA createTA(ProtoTA protoTA) {
 private static Day createDay(String monday) {
 	Day day = new Day();
 	String[] blocks = monday.split("/");
-	day.blockOne = (blocks[0].contains("*") || blocks[0].contains("X")) ? false : true;
-	day.blockTwo = (blocks[1].contains("*") || blocks[1].contains("X")) ? false : true;
-	day.blockThree = (blocks[2].contains("*") || blocks[2].contains("X")) ? false : true;
-	day.blockFour = (blocks[3].contains("*") || blocks[3].contains("X")) ? false : true;
+	day.setBlockOne((blocks[0].contains("*") || blocks[0].contains("X")) ? false : true);
+	day.setBlockTwo((blocks[1].contains("*") || blocks[1].contains("X")) ? false : true);
+	day.setBlockThree((blocks[2].contains("*") || blocks[2].contains("X")) ? false : true);
+	day.setBlockFour((blocks[3].contains("*") || blocks[3].contains("X")) ? false : true);
 	return day;
 }
 

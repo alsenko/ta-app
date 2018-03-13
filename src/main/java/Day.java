@@ -1,9 +1,9 @@
 
 public class Day {
-	boolean blockOne;
-	boolean blockTwo;
-	boolean blockThree;
-	boolean blockFour;
+	private boolean blockOne;
+	private boolean blockTwo;
+	private boolean blockThree;
+	private boolean blockFour;
 
 
 
@@ -22,6 +22,30 @@ public boolean checkBlock(int block){
 }
 public String toString() { 
     return blockOne + " " + blockTwo + " " + blockThree + " " + blockFour;
+}
+public boolean isBlockOne() {
+	return blockOne;
+}
+public void setBlockOne(boolean blockOne) {
+	this.blockOne = blockOne;
+}
+public boolean isBlockTwo() {
+	return blockTwo;
+}
+public void setBlockTwo(boolean blockTwo) {
+	this.blockTwo = blockTwo;
+}
+public boolean isBlockThree() {
+	return blockThree;
+}
+public void setBlockThree(boolean blockThree) {
+	this.blockThree = blockThree;
+}
+public boolean isBlockFour() {
+	return blockFour;
+}
+public void setBlockFour(boolean blockFour) {
+	this.blockFour = blockFour;
 } 
 
 }

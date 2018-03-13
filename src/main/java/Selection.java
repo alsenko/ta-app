@@ -31,9 +31,9 @@ public class Selection
 	private Text actionStatus3;
 	private Text actionStatus4;	
 	private Stage savedStage;
-	private ArrayList<Class> classList;
+	private ArrayList<Course> classList;
 	private ArrayList<TA> taList;
-	private ArrayList<Class> schedule;
+	private ArrayList<Course> schedule;
 	private static final String titleTxt = "UMD TA Schedule Generator";
 	private static final String defaultFileName = "TaSchedule.xlsx";
 

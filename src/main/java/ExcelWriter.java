@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class ExcelWriter {
-	public static void printSchedule(ArrayList<Class> schedule,ArrayList<TA> taList, String FILE_NAME) {
+	public static void printSchedule(ArrayList<Course> schedule,ArrayList<TA> taList, String FILE_NAME) {
 
 	        XSSFWorkbook workbook = new XSSFWorkbook();
 	        CellStyle style = workbook.createCellStyle();
@@ -31,7 +31,7 @@ public class ExcelWriter {
 	        
 	        System.out.println("Creating excel");	        
 	        
-	        for (Class course : schedule){
+	        for (Course course : schedule){
 		        ArrayList<ArrayList<Section>> dailySchedules = new ArrayList<ArrayList<Section>>();
 		        int tempMax = 0;
 		        int max = 0;
@@ -39,9 +39,9 @@ public class ExcelWriter {
 		        	dailySchedules.add(new ArrayList<Section>());
 		        }	        		        	
 		        int rowNum = 0; 
-		        XSSFSheet sheet = workbook.createSheet(course.className);
-		        for (Section section : course.sections){
-		        	switch (section.day){
+		        XSSFSheet sheet = workbook.createSheet(course.getClassName());
+		        for (Section section : course.getSections()){
+		        	switch (section.getDay()){
 		        	
 		        	case 1: dailySchedules.get(0).add(section);
 		        			break;
@@ -65,7 +65,7 @@ public class ExcelWriter {
 		        	Collections.sort(section, new Comparator<Section>() {
 		        	    @Override
 		        	    public int compare(Section o1, Section o2) {
-		        	        return o1.section.compareTo(o2.section);
+		        	        return o1.getSection().compareTo(o2.getSection());
 		        	    }
 		        	});
 		        }
@@ -94,7 +94,7 @@ public class ExcelWriter {
 		        					break;
 				        }
 				    cell.setCellStyle(style2);      
-		        	cell.setCellValue(course.className + " " + day + " Sections" );
+		        	cell.setCellValue(course.getClassName() + " " + day + " Sections" );
 				        }
 				        else if( j == 1){
 				        	cell.setCellStyle(style2);  
@@ -113,25 +113,25 @@ public class ExcelWriter {
 					        tempMax++;
 					        if ( j == 0){
 					        	cell.setCellStyle(style2);  
-					        	cell2.setCellValue(dailySchedules.get(i).get(k).section);
+					        	cell2.setCellValue(dailySchedules.get(i).get(k).getSection());
 					        }
 					        else if ( j == 1){
 					        	cell2.setCellStyle(style);  
-					        	if (dailySchedules.get(i).get(k).teacher == null){
+					        	if (dailySchedules.get(i).get(k).getTeacher() == null){
 					        	cell2.setCellValue("UNFILLED");	
 					        	}
-					        	else if (dailySchedules.get(i).get(k).teacher.fullTA == false){
-					        	cell2.setCellValue(dailySchedules.get(i).get(k).teacher.lastName + " " + dailySchedules.get(i).get(k).teacher.firstName + " UG" );	
+					        	else if (dailySchedules.get(i).get(k).getTeacher().isFullTA() == false){
+					        	cell2.setCellValue(dailySchedules.get(i).get(k).getTeacher().getLastName() + " " + dailySchedules.get(i).get(k).getTeacher().getFirstName() + " UG" );	
 					        	}
 					        	else{
-						        cell2.setCellValue(dailySchedules.get(i).get(k).teacher.lastName + " " + dailySchedules.get(i).get(k).teacher.firstName );
+						        cell2.setCellValue(dailySchedules.get(i).get(k).getTeacher().getLastName() + " " + dailySchedules.get(i).get(k).getTeacher().getFirstName() );
 					        	}
 					        }
 					        else if ( j == 2)
-					        	cell2.setCellValue(dailySchedules.get(i).get(k).room);
+					        	cell2.setCellValue(dailySchedules.get(i).get(k).getRoom());
 					        else{
 					        	String time = null;
-				        		int block = dailySchedules.get(i).get(k).block;
+				        		int block = dailySchedules.get(i).get(k).getBlock();
 					        	if (i % 2 == 0){
 					        		if (block==1){
 					        			time = "9:30 - 12:20 p.m.";
@@ -161,7 +161,7 @@ public class ExcelWriter {
 					        		}					        		
 					        		
 					        	}
-					        	if (block == 4 && dailySchedules.get(i).get(k).section.contains("SE")){
+					        	if (block == 4 && dailySchedules.get(i).get(k).getSection().contains("SE")){
 					        		time = "7:30 - 10:20 p.m.";
 					        	}
 					        	cell2.setCellValue(time);
@@ -183,7 +183,7 @@ public class ExcelWriter {
 	        int max = 0;
 	        ArrayList<TA> remainingTAs = new ArrayList<TA>();
 	        for (TA ta : taList){
-	        	if (ta.status > 0)
+	        	if (ta.getStatus() > 0)
 	        		remainingTAs.add(ta);
 	        }
 	        
@@ -194,22 +194,22 @@ public class ExcelWriter {
 	        			Cell cell = row.createCell(colNum++);
 	        			
 	        			switch (i){
-	        			case 0: cell.setCellValue(ta.lastName);	
+	        			case 0: cell.setCellValue(ta.getLastName());	
 	        					break;
 	        			
-	        			case 1: cell.setCellValue(ta.firstName);	
+	        			case 1: cell.setCellValue(ta.getFirstName());	
     							break;
 	        			
-	        			case 2:cell.setCellValue((ta.fullTA) ? "Full TA" : "Half TA");	
+	        			case 2:cell.setCellValue((ta.isFullTA()) ? "Full TA" : "Half TA");	
 								break;
 	        				
-	        			case 3:cell.setCellValue(Integer.toString(ta.teaching.size()));
+	        			case 3:cell.setCellValue(Integer.toString(ta.getTeaching().size()));
 	        					break;
-	        			case 4:cell.setCellValue(ta.pref1);
+	        			case 4:cell.setCellValue(ta.getPref1());
 	        					break;
-	        			case 5:cell.setCellValue(ta.pref2);
+	        			case 5:cell.setCellValue(ta.getPref2());
 	        					break;	        			
-	        			case 6:cell.setCellValue(ta.pref3);
+	        			case 6:cell.setCellValue(ta.getPref3());
 	        					break;	        			
 	        			}
 	        		}

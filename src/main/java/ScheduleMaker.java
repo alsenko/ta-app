@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ScheduleMaker {
-	 public static void printCurrentList(ArrayList<Class> schedule) {
-		 for (Class x : schedule){
+	 public static void printCurrentList(ArrayList<Course> schedule) {
+		 for (Course x : schedule){
 				System.out.println(x.toString());
-				for (Section y : x.sections){
-					System.out.println(y.day + " " + y.block + " " + y.teacher);
+				for (Section y : x.getSections()){
+					System.out.println(y.getDay() + " " + y.getBlock() + " " + y.getTeacher());
 				}
 			}
 		
@@ -35,21 +35,21 @@ public class ScheduleMaker {
 		
 	}
 	
-	public static ArrayList<Class> createSchedule(HashMap<Integer,HashMap<Integer,ArrayList<TA>>> taMap, ArrayList<Class> classList){
+	public static ArrayList<Course> createSchedule(HashMap<Integer,HashMap<Integer,ArrayList<TA>>> taMap, ArrayList<Course> classList){
 		boolean gradOnly = true;
 		for (int i = 0; i <= 1; i++){
-		for (Class course : classList){
-			for (Section section : course.sections){
-				if (section.teacher == null){
+		for (Course course : classList){
+			for (Section section : course.getSections()){
+				if (section.getTeacher() == null){
 					ArrayList<TA> visited = new ArrayList<TA>();
 					assignTA(section,taMap,visited,1,gradOnly,classList);
 				}
 			}
 		}
 		
-		for (Class course : classList){
-		for (Section section : course.sections){
-			if (section.teacher == null){
+		for (Course course : classList){
+		for (Section section : course.getSections()){
+			if (section.getTeacher() == null){
 				ArrayList<TA> visited = new ArrayList<TA>();
 				assignTA(section,taMap,visited,2,gradOnly,classList);
 				}
@@ -57,9 +57,9 @@ public class ScheduleMaker {
 		}
 		
 		
-		for (Class course : classList){
-		for (Section section : course.sections){
-			if (section.teacher == null){
+		for (Course course : classList){
+		for (Section section : course.getSections()){
+			if (section.getTeacher() == null){
 				ArrayList<TA> visited = new ArrayList<TA>();
 				assignTA(section,taMap,visited,3,gradOnly,classList);
 				}
@@ -72,26 +72,26 @@ public class ScheduleMaker {
 	}
 	
 	private static boolean assignTA(Section section,HashMap<Integer,HashMap<Integer,ArrayList<TA>>> taMap,ArrayList<TA> visited,
-			int pref, boolean gradOnly, ArrayList<Class> schedule){
-		for (TA ta : taMap.get(section.day).get(section.block)){
-			if (ta.status > 0 && preference(ta,pref,section) && noOverlap(ta.teaching,section)){
+			int pref, boolean gradOnly, ArrayList<Course> schedule){
+		for (TA ta : taMap.get(section.getDay()).get(section.getBlock())){
+			if (ta.getStatus() > 0 && preference(ta,pref,section) && noOverlap(ta.getTeaching(),section)){
 			if (gradOnly){
-				if (ta.fullTA == false)
+				if (ta.isFullTA() == false)
 					continue;
 			}
-			ta.status -= 1;
-			ta.teaching.add(section);
-			section.teacher = ta;
+			ta.setStatus(ta.getStatus() - 1);
+			ta.getTeaching().add(section);
+			section.setTeacher(ta);
 			return true;
 			}	
 		}
 
 		// failure condition 1: all TAs are full ? - Take first TA and reroute his availability
-		for (TA ta :taMap.get(section.day).get(section.block)){
+		for (TA ta :taMap.get(section.getDay()).get(section.getBlock())){
 			if (visited.contains(ta) || !(preference(ta,pref,section)))
 				continue;
 			if (gradOnly){
-				if (ta.fullTA == false)
+				if (ta.isFullTA() == false)
 					continue;
 			}
 
@@ -104,21 +104,21 @@ public class ScheduleMaker {
 		return false;
 	}
 		
-	private static boolean rerouteTA(Section curr, TA ta, HashMap<Integer, HashMap<Integer, ArrayList<TA>>> taMap,ArrayList<TA> visited,int pref, boolean gradOnly, ArrayList<Class> schedule) {
+	private static boolean rerouteTA(Section curr, TA ta, HashMap<Integer, HashMap<Integer, ArrayList<TA>>> taMap,ArrayList<TA> visited,int pref, boolean gradOnly, ArrayList<Course> schedule) {
 
 		
 		boolean onlyGrad = true;
 	for (int j = 0; j <= 1; j++){
 		for (int i = 1; i <= pref; i++){
-		if (assignTA(ta.teaching.get(0),taMap,visited,i,onlyGrad,schedule)){
-			ta.teaching.set(0, curr);
-			curr.teacher = ta;
+		if (assignTA(ta.getTeaching().get(0),taMap,visited,i,onlyGrad,schedule)){
+			ta.getTeaching().set(0, curr);
+			curr.setTeacher(ta);
 			return true;
 		}
-		else if (ta.teaching.size() > 1){
-			if (assignTA(ta.teaching.get(1),taMap,visited,i,onlyGrad,schedule)){
-				ta.teaching.set(1, curr);
-				curr.teacher = ta;
+		else if (ta.getTeaching().size() > 1){
+			if (assignTA(ta.getTeaching().get(1),taMap,visited,i,onlyGrad,schedule)){
+				ta.getTeaching().set(1, curr);
+				curr.setTeacher(ta);
 				return true;
 			}			
 		}
@@ -132,11 +132,12 @@ public class ScheduleMaker {
 	private static boolean preference(TA ta, int pref, Section section) {
 		switch (pref){
 		
-		case 1: return (section.course.equals(ta.pref1));
+		case 1: return (section.getCourse().equals(ta.getPref1()));
 			
-		case 2:	return (section.course.equals(ta.pref1) || section.course.equals(ta.pref2));
+		case 2:	return (section.getCourse().equals(ta.getPref1()) || section.getCourse().equals(ta.getPref2()));
 			
-		case 3:	return (section.course.equals(ta.pref1) || section.course.equals(ta.pref2)|| section.course.equals(ta.pref3));
+		case 3:	return (section.getCourse().equals(ta.getPref1()) || section.getCourse().equals(ta.getPref2())
+				|| section.getCourse().equals(ta.getPref3()));
 		
 		
 		}
@@ -144,8 +145,8 @@ public class ScheduleMaker {
 	}
 	private static boolean noOverlap(ArrayList<Section> teaching, Section section) {
 		for (Section taSection : teaching){
-			if (taSection.day == section.day)
-				if (taSection.block == section.block)
+			if (taSection.getDay() == section.getDay())
+				if (taSection.getBlock() == section.getBlock())
 					return false;
 		}
 		return true;
